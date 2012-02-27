@@ -1,16 +1,16 @@
 package main
 
 import (
-	"image"
-	"image/png"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
+	"path/filepath"
+	"image"
+	"image/png"
 )
 
-// Handler is an HTTP handler for serving filtered images.
-type Handler struct{}
+// ImageHandler is an HTTP handler for serving filtered images.
+type ImageHandler struct {}
 
 // ServeHTTP applies requested filters to the pictures and serves its
 // modified version.
@@ -18,7 +18,7 @@ type Handler struct{}
 // w - A response writer.
 // r - Request to be performed.
 //
-func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *ImageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := filepath.Join(ImagesRoot, r.URL.Path)
 	pic := NewPicture(path)
 
@@ -30,7 +30,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
+	
 	r.ParseForm()
 	result := ApplyFiltersBatch(strings.Split(r.FormValue("filter"), ","), pic.Image)
 	w.WriteHeader(http.StatusOK)
