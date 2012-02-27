@@ -1,16 +1,15 @@
-Golaroid - Image filtering web-service in Go 
-============================================
+# Golaroid - Image filtering web-service in Go 
 
 Golaroid is a simple web-service which provides picture filtering.
 
-Installation
-------------
+## Installation
+
 Use the `go install` tool:
 
     $ go install github.com/nu7hatch/golaroid
 
-Usage
------
+## Usage
+
 Start golaroid service on given address and pointed to specified images
 root location:
 
@@ -18,17 +17,17 @@ root location:
 
 Now go to `http://127.0.0.1:8090/bubble.jpg?filter=sepia` to see effects.
 
-Filters
--------
+## Filters
+
 So far project is on very early states and supports only the following
 filters:
 
 * desaturate
 * sepia
 
-Copyright
----------
-Copyright (C) 2011 by Krzysztof Kowalik <chris@nu7hat.ch> and folks at Cubox
+## Copyright
+
+Copyright (C) 2011 by Krzysztof Kowalik <chris@nu7hat.ch>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
