@@ -1,0 +1,1 @@
+web: golaroid -addr :$PORT
