@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"flag"
 	"log"
+	"net/http"
 )
 
 var (
@@ -20,9 +20,6 @@ func init() {
 }
 
 func main() {
-	srv := &http.Server{
-		Addr:    Addr,
-		Handler: &ImageHandler{},
-	}
-	log.Fatal(srv.ListenAndServe())
+	http.HandleFunc("/filter", FilterImageHandler)
+	log.Fatal(http.ListenAndServe(Addr, nil))
 }

@@ -1,11 +1,15 @@
 package main
 
 import (
+	"errors"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
+	"net/http"
 	"os"
+	"path/filepath"
+	"regexp"
 )
 
 // Picture is a wrapper for the raw image, providing i.a reading image
@@ -19,6 +23,8 @@ type Picture struct {
 	Format string
 }
 
+var isRemoteAddr = regexp.MustCompile(`\Ahttp\://(.*)(?i)`)
+
 // NewPicture allocates memory for the picture object.
 //
 // path - The image location path.
@@ -28,15 +34,41 @@ func NewPicture(path string) *Picture {
 	return &Picture{Path: path}
 }
 
-// Load reads image from the file.
+// Load reads image from the file or remote address.
 //
 // Returns an error if something went wrong.
-func (pic *Picture) Load() (err error) {
+func (pic *Picture) Load() error {
+	if isRemoteAddr.MatchString(pic.Path) {
+		return pic.loadRemote()
+	}
+	return pic.loadLocal()
+}
+
+// loadLocal reads image from local file.
+//
+// Returns an error if something went wrong.
+func (pic *Picture) loadLocal() (err error) {
 	var file *os.File
-	if file, err = os.Open(pic.Path); err != nil {
+	path := filepath.Join(ImagesRoot, pic.Path)
+	if file, err = os.Open(path); err != nil {
 		return
 	}
 	pic.Image, pic.Format, err = image.Decode(file)
+	return
+}
+
+// loadRemote reads image from remote address.
+//
+// Returns an error if something went wrong.
+func (pic *Picture) loadRemote() (err error) {
+	var resp *http.Response
+	if resp, err = http.Get(pic.Path); err != nil {
+		return
+	}
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("Couldn't load picture")
+	}
+	pic.Image, pic.Format, err = image.Decode(resp.Body)
 	return
 }
 

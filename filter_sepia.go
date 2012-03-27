@@ -5,7 +5,9 @@ import (
 	"image/color"
 )
 
-func SepiaFilter(orig image.Image) image.Image {
+type SepiaFilter struct{}
+
+func (f *SepiaFilter) Apply(orig image.Image) image.Image {
 	res := image.NewRGBA(orig.Bounds())
 	EachPixel(orig, func(x, y int, r, g, b, a uint8) {
 		rt := (float32(r) * 0.393) + (float32(g) * 0.769) + (float32(b) * 0.189)
@@ -24,4 +26,8 @@ func SepiaFilter(orig image.Image) image.Image {
 		res.Set(x, y, c)
 	})
 	return res
+}
+
+func init() {
+	Filters["sepia"] = &SepiaFilter{}
 }
